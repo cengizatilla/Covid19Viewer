@@ -1,0 +1,44 @@
+﻿@using CA.Covid19ViewerApp.Models.Entities
+@model worldTotal
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/covidAppMaster.cshtml";
+}
+
+<canvas id="myChart"></canvas>
+
+@section JavascriptExternal{
+    <script>
+        let myChart = document.getElementById('myChart').getContext('2d');
+        let massPopChart = new Chart(myChart, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Total Confirmed', 'Total Deaths', 'Total Recovered'],
+                datasets: [{
+                    label: 'World Covid 19 Total',
+                    data: [
+                        @Model.TotalConfirmed,
+                        @Model.TotalDeaths,
+                        @Model.TotalRecovered
+                    ],
+                    backgroundColor: [
+                        'gray',
+                        'red',
+                        'green'
+                    ]
+                }]
+            },
+            options: {},
+            layout: {
+                padding: {
+                    left: 100,
+                    right: 100,
+                    bottom: 100,
+                    top:100
+                }
+            }
+        });
+    </script>
+}
+
+

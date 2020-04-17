@@ -1,0 +1,105 @@
+﻿@using CA.Covid19ViewerApp.Models.Entities
+@model List<countries>
+
+@{
+    ViewBag.Title = "ByCountry";
+    Layout = "~/Views/Shared/covidAppMaster.cshtml";
+}
+
+<div>
+    <div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Select Country</label>
+            <select id="selectCountry" class="form-control" onchange="selectedCountryChange()">
+                <option value="selectCountry">Please Select Country</option>
+                @foreach (var item in Model)
+                {
+                    <option value="@item.Slug" id="@item.Slug">@item.Country</option>
+                }
+            </select>
+            <small id="emailHelp" class="form-text text-muted">Select the country you want to see details from the list</small>
+        </div>
+    </div>
+    <div id="countryDetails">
+
+    </div>
+</div>
+@section JavascriptExternal{
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#selectCountry').select2();
+
+        });
+
+        function selectedCountryChange() {
+            var selectedItem = $("#selectCountry").val();
+            if (selectedItem == 'selectCountry') {
+                alert("Please select country");
+            }
+            else {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Home/getCountryPartial',
+                    datatype: JSON,
+                    data: {
+                        'countryName': selectedItem
+                    },
+                    success: function (data) {
+                        $("#countryDetails").html(data);
+                        $('#countryTable').DataTable();
+                        getCountryChart(selectedItem);
+                    },
+                    error: function (data) { }
+                });
+            }
+
+        }
+
+        function getCountryChart(countryName) {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/getCountryChart',
+                datatype: JSON,
+                data: {
+                    'countryName': countryName
+                },
+                success: function (data) {
+                    // console.log(data);
+                    // var dataListDate = data.dateString.toString();
+                    // console.log(dataListDate);
+                    let myChart = document.getElementById('myChart').getContext('2d');
+                    let massPopChart = new Chart(myChart, {
+                        type: 'bar',
+                        data: {
+                            labels: data.dateString.toString().split(','),
+                            datasets: [{
+                                label: 'World Covid 19 Total',
+                                data: data.dateValue.toString().split(','),
+                                backgroundColor: 'green'
+                            }]
+                        },
+                        options: {},
+                        layout: {
+                            padding: {
+                                left: 100,
+                                right: 100,
+                                bottom: 100,
+                                top: 100
+                            }
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+
+
+        }
+    </script>
+}

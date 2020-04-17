@@ -1,0 +1,42 @@
+﻿@using CA.Covid19ViewerApp.Models.Entities
+@model List<cases>
+
+<div>
+    <div class="col-md-6">
+        <table id="countryTable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Confirmed</th>
+                    <th>Deaths</th>
+                    <th>Recovered</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Country</td>
+                        <td>@item.Confirmed</td>
+                        <td>@item.Deaths</td>
+                        <td>@item.Recovered</td>
+                        <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Country</th>
+                    <th>Confirmed</th>
+                    <th>Deaths</th>
+                    <th>Recovered</th>
+                    <th>Date</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
